@@ -11,7 +11,7 @@ A set of ComfyUI custom nodes designed for ultimate laziness. Generate diverse i
 Honestly, I'm too lazy to write a detailed guide, and let's be real—nobody actually opens the README to read it anyway. Just plug it into your workflow and figure it out. It's not rocket science. Enjoy!
 
 
-Batch Conditional Text
+## Batch Conditional Text
 🇨🇳 中文说明 (Chinese)
 这是一个专门用于 ComfyUI 批次生成（如动画、视频帧或多图批量生成）的条件文本节点。它可以根据当前批次索引（Batch Index）在指定的范围内、范围外或特定点，按设定的概率输出指定的文本。
 
