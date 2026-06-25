@@ -40,8 +40,8 @@ greater_than: 25, less_than: 40, probability: 0.50, text: bad day
 ※Newly added random weight within order range
 
 
-### batch randoml text
-* **Weighted Random Selection (`Moon_NE_Text_Weighted_Random`)**: Allows you to input multiple text strings and select one randomly based on a custom weight ratio (e.g., inputting weights `1, 2, 3` gives the third text the highest probability of being chosen).
-  Fault Tolerance: Automatically handles mismatched weight counts and invalid weight inputs.
+## batch randoml text
+Allows you to input multiple text strings and select one randomly based on a custom weight ratio (e.g., inputting weights `1, 2, 3` gives the third text the highest probability of being chosen).
+Fault Tolerance: Automatically handles mismatched weight counts and invalid weight inputs.
 
 
