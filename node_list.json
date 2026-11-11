@@ -1,0 +1,10 @@
+{
+  "BatchConditionalText": "Output text when the batch index matches the range and probability settings. Otherwise, output an empty string.",
+  "BatchConditionalTextWeight": "Output prompts for matching batch indices, with a random weight for each comma-separated tag.",
+  "TextHorizontalToVertical": "Convert horizontal text to vertical columns read from right to left. Disable conversion to keep the original text.",
+  "Moon_NE_Text_Concatenate": "Join text inputs in order with a chosen separator. Connecting an input adds another socket.",
+  "batch_randoml_text": "Pick one text input at random. Enter weights in socket order; larger numbers make an input more likely to be picked.",
+  "NTD11BatchMosaic": "Apply mosaic to detected regions in a folder of videos, with optional subfolders and audio preservation.",
+  "NTD11VideoMosaic": "Apply mosaic to detected regions in the selected video and keep its audio.",
+  "NTD11VideoFile": "Choose a video from your computer."
+}

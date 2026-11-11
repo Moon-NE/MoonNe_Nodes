@@ -2,6 +2,7 @@ import random
 
 
 class BatchConditionalText:
+    DESCRIPTION = 'Output text when the batch index matches the range and probability settings. Otherwise, output an empty string.'
 
     @classmethod
     def INPUT_TYPES(cls):

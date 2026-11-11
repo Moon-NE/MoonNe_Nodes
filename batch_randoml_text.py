@@ -10,6 +10,7 @@ class ContainsAnyDict(dict):
 
 
 class batch_randoml_text:
+    DESCRIPTION = 'Pick one text input at random. Enter weights in socket order; larger numbers make an input more likely to be picked.'
 
     @classmethod
     def INPUT_TYPES(cls):

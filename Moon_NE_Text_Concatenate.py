@@ -10,6 +10,7 @@ class ContainsAnyDict(dict):
 
 
 class Moon_NE_Text_Concatenate:
+    DESCRIPTION = 'Join text inputs in order with a chosen separator. Connecting an input adds another socket.'
 
     @classmethod
     def INPUT_TYPES(cls):

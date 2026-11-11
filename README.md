@@ -1,47 +1,86 @@
-# ComfyUI One-Click Random Generator Nodes
+# MoonNe_Nodes
 
-A set of ComfyUI custom nodes designed for ultimate laziness. Generate diverse images with a single click using randomized prompts and dynamic weights.
+Text utilities and NTD11 video mosaic nodes for ComfyUI. Join prompts, pick weighted random text, or apply mosaic to detected regions in a video or a folder of videos.
 
-## 🚀 Key Features
+[中文说明](README.zh-CN.md)
 
-* **Probabilistic Prompts:** Set custom probability thresholds for specific keywords/prompts to appear.
-* **Randomized Weights:** Automatically assign randomized weights to prompts within your preferred range to discover unexpected variations.
+## Install or update
 
-## Usage
-Honestly, I'm too lazy to write a detailed guide, and let's be real—nobody actually opens the README to read it anyway. Just plug it into your workflow and figure it out. It's not rocket science. Enjoy!
+Search for **MoonNe_Nodes** in ComfyUI Manager. Install or update the pack, restart ComfyUI, and refresh the page.
 
+For a manual install, clone this repository into `ComfyUI/custom_nodes`:
 
-## Batch Conditional Text Weight
+```sh
+git clone https://github.com/Moon-NE/MoonNe_Nodes.git
+```
 
-This is a conditional text node designed for ComfyUI batch processing (e.g., animations, video frames, or batch image generation). It outputs a specified text based on whether the current batch_index meets the range conditions, under a custom execution probability.
+Install dependencies using **the Python environment that runs ComfyUI**. From the ComfyUI directory:
 
-📌 Key Features
-Auto-Switching Range Modes:
+```sh
+python -m pip install -r custom_nodes/MoonNe_Nodes/requirements.txt
+```
 
-If greater_than < less_than ➡️ Inside Range mode (e.g., between 25 and 40).
+For the Windows portable build, run this from the directory containing `python_embeded`:
 
-If greater_than > less_than ➡️ Outside Range mode (e.g., less than 25 OR greater than 40).
+```bat
+python_embeded\python.exe -m pip install -r ComfyUI\custom_nodes\MoonNe_Nodes\requirements.txt
+```
 
-If they are equal ➡️ Single Point mode (e.g., exactly equal to 40).
+If you previously installed `ComfyUI-NTD11-BatchMosaic`, disable that pack in Manager or move its folder out of `custom_nodes`, then restart. The three video node IDs are unchanged, so existing workflows still load.
 
-Independent Probability: Adjust the trigger rate via probability (0.0 - 1.0). By combining seed and batch_index, the randomness for each frame remains unique yet perfectly reproducible.
+## Video mosaic
 
-Cache Busting: Built-in IS_CHANGED mechanism ensures ComfyUI evaluates the probability on every single run instead of frozen by cache.
+Video detection currently requires an **NVIDIA CUDA GPU**. You also need:
 
-💬 Examples
-Ex 1 (Outside Range): Output good day with a 30% chance when batch is less than 25 or greater than 40.
+1. **ComfyUI Impact Subpack**, available in Manager, for `UltralyticsDetectorProvider`.
+2. `ntd11_anime_nsfw_segm_v4_all.pt` in `ComfyUI/models/ultralytics/segm/`. Model weights are not included in this repository.
+3. [FFmpeg](https://ffmpeg.org/download.html) on your PATH. On Windows, the Gyan FFmpeg package installed through WinGet is also detected.
 
-greater_than: 40, less_than: 25, probability: 0.30, text: good day
+### One video
 
-Ex 2 (Inside Range): Output bad day with a 50% chance when batch is between 25 and 40.
+Load [the file picker workflow](examples/ntd11_video_file.json). Click **Choose video file...** on the **NTD11 Video File** node, wait for the filename to appear, and click **Run**.
 
-greater_than: 25, less_than: 40, probability: 0.50, text: bad day
+The selected video is copied to `ComfyUI/input/ntd11_videos`. Results go to `ComfyUI/output/ntd11_mosaic`, with a new folder for each run. The original file is kept.
 
-※Newly added random weight within order range
+### A folder of videos
 
+Load [the batch workflow](examples/ntd11_folder_batch.json), set `input_folder` and `output_folder`, and run it.
 
-## batch randoml text
-Allows you to input multiple text strings and select one randomly based on a custom weight ratio (e.g., inputting weights `1, 2, 3` gives the third text the highest probability of being chosen).
-Fault Tolerance: Automatically handles mismatched weight counts and invalid weight inputs.
+- `file_pattern`: use `*` for all supported videos, or patterns such as `*.mp4;*.webm`.
+- `recursive`: include subfolders when enabled.
+- Supported inputs: MP4, MKV, WebM, MOV, M4V, and AVI. Output is MP4 with audio preserved.
 
+### Settings
 
+Start with the workflow defaults and adjust after checking a result.
+
+| Setting | What it does |
+| --- | --- |
+| `target_classes` | Defaults to `pussy,penis,testicles`. Add `anus` or `nipples` if needed, separated by commas. |
+| `block_pixels` | Mosaic block size in source pixels. Default: 16. Larger values make coarser blocks. |
+| `padding_pixels` / `padding_percent` | Expand mask edges. Increase slightly if the edges of a target remain visible. |
+| `confidence` | Detection confirmation score. Raising it can reduce false positives but may miss more targets. |
+| `batch_size` | Frames processed together. Lower it if you run out of VRAM. |
+| `male_recheck` | Additional checks for male targets that appear briefly or return after an occlusion. |
+| `encoder` | `h264_nvenc` uses NVIDIA hardware encoding. Try `libx264` if encoding fails; detection still requires CUDA. |
+| `quality` | Default: 18. Lower values give higher quality and larger files. |
+
+Masks follow the detected contours. Short gaps are filled to reduce flicker. Check the finished video for missed or incorrect regions. A report marked `needs_review` means some sections need checking, not that processing failed. If the entire video has no detections, the node saves a report without exporting a video.
+
+## Text nodes
+
+| Node | Usage |
+| --- | --- |
+| **∞ Text Concatenate** | Join inputs in socket order using `delimiter`. Connecting an input adds another socket. |
+| **Text Horizontal To Vertical** | Turn horizontal lines into vertical columns read from right to left. Disable `enable_convert` to keep the original text. |
+| **Batch Conditional Text** | Output text when `batch_index` matches the range and `probability` settings. |
+| **Batch Conditional Text Weight** | Conditional text output with a random weight for each comma-separated tag, between `min_weight` and `max_weight`. |
+| **batch random text** | Pick one input using `weights` in socket order. With `1, 2, 3`, the third input is most likely to be selected. |
+
+For the two conditional nodes, `greater_than < less_than` selects the range including both endpoints. Reversing them selects values strictly outside the range. Equal values select that exact index. A failed condition outputs an empty string.
+
+For example, `greater_than=25`, `less_than=40`, and `probability=0.5` give indices 25 through 40 a 50% chance of outputting the text. Keep `seed` fixed to repeat a result, or set its after-generation control to `randomize` for a new selection each run.
+
+## Video module license
+
+The video processing module is distributed under [AGPL-3.0-or-later](video_mosaic/LICENSE.txt). Third-party models and dependencies retain their own licenses.

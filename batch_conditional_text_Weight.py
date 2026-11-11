@@ -2,6 +2,7 @@ import random
 
 
 class BatchConditionalTextWeight:
+    DESCRIPTION = 'Output prompts for matching batch indices, with a random weight for each comma-separated tag.'
 
     @classmethod
     def INPUT_TYPES(cls):

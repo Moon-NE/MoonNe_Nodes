@@ -1,6 +1,7 @@
 import os
 
 class TextHorizontalToVertical:
+    DESCRIPTION = 'Convert horizontal text to vertical columns read from right to left. Disable conversion to keep the original text.'
     @classmethod
     def INPUT_TYPES(cls):
         return {
